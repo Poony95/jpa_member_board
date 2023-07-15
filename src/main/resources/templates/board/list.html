@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="javascript:void(0)">YeIn</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="mynavbar">
+				<ul class="navbar-nav me-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/board/insert/0">글쓰기</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/board/list/1/all">모두출력</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{'/board/list/1/'+${session.user.id}}" th:text="내글"></a>
+					</li>
+					<li class="nav-item">
+						<th:block th:if="${session.user.role} == 'admin'">
+							<a class="nav-link" href="/admin/index">관리자메뉴</a>
+						</th:block>
+					</li>
+				</ul>
+				<form class="d-flex">
+					<input class="form-control me-2" type="text" placeholder="Search">
+					<button class="btn btn-primary" type="button">search</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid mt-3">
+		<!--<span th:text="${session.id}+'님 로그인하였습니다.'"></span>-->
+		<span th:text="${session.user.id}+'('+${session.user.name}+')님 로그인하였습니다.'"></span>
+	</div>
+	<br />
+	<br />
+	<h2>자유게시판</h2>
+	<br />
+	<table class="table table-hover">
+		<tr>
+			<td>글번호</td>
+			<td>제목</td>
+			<td>작성자</td>
+			<td>등록일</td>
+		</tr>
+		<tr th:each="b:${list}">
+			<td th:text="${b.no}"></td>
+			<td>
+				<span th:if="${b.b_level>0}">
+					<span th:each="i:${#numbers.sequence(1, b.b_level)}">&nbsp;&nbsp;</span>
+					->
+				</span>
+				<a th:href="@{'/board/detail/'+${b.no}}" th:text="${b.title}"></a>
+			</td>
+			<td>
+				<a th:href="@{'/board/list/1/'+${b.member.id}}" th:text="${b.member.id}"></a>
+			</td>
+			<td th:text="${b.regdate}"></td>
+		</tr>
+	</table>
+	<hr />
+	
+	<!-- Center-aligned -->
+	<ul class="pagination justify-content-center">
+	<th:block th:each="i:${#numbers.sequence(1,totalPage)}">
+		<li class="page-item"><a class="page-link" th:href="@{'/board/list/'+${i}+'/'+${id}}" th:text="${i}"></a></li>
+	</th:block>
+	</ul>
+	
+</body>
+
+</html>
